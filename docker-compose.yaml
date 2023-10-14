@@ -1,0 +1,37 @@
+version: "3.8"
+networks:
+  myapp_network:
+
+services:
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_PASSWORD: Postgres1234
+      POSTGRES_USER: postgres
+      POSTGRES_DB: InternetHealth
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 0.5s
+      retries: 5
+    ports:
+      - "5432:5432"
+    networks:
+      - myapp_network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+        db:
+          condition: service_healthy
+    networks:
+      - myapp_network
+
+  grafana:
+    image: grafana/grafana-enterprise
+    container_name: grafana
+    restart: unless-stopped
+    ports:
+     - '3000:3000'
