@@ -30,7 +30,7 @@ services:
       - myapp_network
 
   grafana:
-    image: grafana/grafana-enterprise
+    image: grafana/grafana:latest
     container_name: grafana
     restart: unless-stopped
     ports:
